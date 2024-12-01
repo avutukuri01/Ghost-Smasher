@@ -1,0 +1,377 @@
+# Brown path image created by me using adobe illustrator:
+app.path = 'cmu://744060/30070950/Path.png'
+# Image I used from internet:
+# Link to graveyard image: https://www.rawpixel.com/image/6307697/png-sticker-vintage
+app.url = 'cmu://744060/30042926/Graveyard-removebg-preview.png'
+# Ghost image created by me on adobe illustrator:
+app.ghost = 'cmu://744060/30043473/Ghost_Image-removebg-preview.png'
+# Variable used to determine whether the game should begin or not. app.play is switched to True
+# when the play button is clicked:
+app.play = False
+# Counts the time starting from when the game begins:
+app.time = 0
+# Changes the rate at which ghosts spawn. This number is different based on the level users choose:
+app.ghost_frequency = 20
+# This variable determines how many points players loose if the miss a ghost:
+app.lost_points = -1
+
+# Code the original shape of the play button:
+button = Group(
+    Rect(125,200,150,75,fill=rgb(0,143,0),border=rgb(18,53,36),borderWidth=10),
+    RegularPolygon(200,237.5,20,3,rotateAngle = -30,fill='white')
+)
+
+# Codes the shape of the easy level (green) button:
+mode1 = Group(
+    Rect(50,325,50,35,fill=rgb(0,143,0),border=rgb(18,53,36),borderWidth=7),
+)
+
+# Codes the shape of the normal level (blue) button:
+mode2 = Group(
+    Rect(175,325,50,35,fill=rgb(0,143,0),border=rgb(18,53,36),borderWidth=7),
+    Rect(175,325,50,35,fill='blue',opacity = 40,border='blue')
+)
+
+# Codes the shape of the difficult level (red) button:
+mode3 = Group(
+    Rect(300,325,50,35,fill=rgb(0,143,0),border=rgb(18,53,36),borderWidth=7),
+    Rect(300,325,50,35,fill='red',opacity = 40,border='red')
+)
+
+# Group containing all easy, normal, and difficult buttons:
+levels = Group(
+    mode1,
+    mode2,
+    mode3
+)
+
+# Group containing all the elements of the home page including the text and buttons:
+Start = Group(
+    Rect(0,0,400,400,fill=rgb(119,116,117)),
+    Label('Ghost Smasher',200,70,size=45,fill='white'),
+    Label('Score 15 points in 30 seconds to win!',200,125,size=15,fill='white'),
+    Label('If you hit a ghost with your mouse you get a point!',200,145,size=15,fill='white'),
+    Label('If you let a ghost exit the screen you lose points',200,165,size=15,fill='white'),
+    Label('Select a difficulty level below',200,300,size=20,fill='white'),
+    Label("Easy", 75,380,fill='white',size=20),
+    Label("Normal", 200,380,fill='white',size=20),
+    Label("Difficult", 325,380,fill='white',size=20),
+    button,
+    levels
+)
+
+# Group containing the win screen shown if a play wins the game:
+Win = Group(
+    Rect(0,0,400,400,fill=rgb(119,116,117)),
+    Label('You Won!',200,200,size=45,fill='white'),
+)
+
+# Group containing the lose screen shown if a player loses:
+Lost = Group(
+    Rect(0,0,400,400,fill=rgb(119,116,117)),
+    Label('You Ran Out of Time',200,180,size=40,fill='white'),
+    Label('Game Over',200,220,size=35,fill='white'),
+)
+
+# Sets the lose and win screens to invisible at the start of the game:
+Lost.visible = False
+Win.visible = False
+
+# Changes the starting dimension of the play button:
+button.width = 150
+button.height = 75
+button.centerX = 200
+
+# Where I coded what happens when a user moves their mouse:
+def onMouseMove(mouseX,mouseY):
+    # Determines what to do when a user does or doesn't hover over the play button
+    # This code makes the play button larger when a user hovers over it:
+    if button.hits(mouseX,mouseY):
+        button.width = 190
+        button.height = 100
+        button.centerX = 200
+    else:
+        button.width = 150
+        button.height = 75
+        button.centerX = 200
+
+    # Determines what to do when a user does or doesn't hover over one of the level buttons
+    # Goes through all the level buttons and changes their size based on where the user's mouse is:
+    for mode in levels:
+        if mode.hits(mouseX,mouseY):
+            if mode.width != 76:
+                centerx = mode.centerX
+                mode.width = 75
+                mode.height = 50
+        else:
+            if mode.width != 76:
+                centerx = mode.centerX
+                mode.width = 50
+                mode.height = 35
+
+# Places the brown path on the game map:
+path = Image(app.path,35,50)
+path.width -= 200
+path.height -= 600
+path.top += 100
+
+# The following code places 5 tombs in different spots on the game map:
+tomb1 = Image(app.url, 25, 75)
+tomb1.width -= 150
+tomb1.height -= 150
+tomb1.top += 75
+
+tomb2 = Image(app.url, 215, 75)
+tomb2.width -= 110
+tomb2.height -= 110
+tomb2.top += 225
+tomb2.left += 20
+
+tomb3 = Image(app.url, 215, 75)
+tomb3.width -= 135
+tomb3.height -= 135
+tomb3.top += 125
+tomb3.left -= 110
+
+tomb4 = Image(app.url, 215, 75)
+tomb4.width -= 120
+tomb4.height -= 120
+tomb4.top += 200
+tomb4.left -= 225
+
+tomb5 = Image(app.url, 215, 75)
+tomb5.width -= 120
+tomb5.height -= 120
+tomb5.top += 75
+tomb5.left += 45
+
+# Defines the score counter:
+app.Score = Label(0, 100, 375, fill='white', size=25)
+
+# Puts all of the map elements in one group:
+background = Group(
+    Rect(0,150,400,250,fill=gradient(rgb(144,238,144),rgb(144,238,144),'darkGreen',start='top')),
+    Rect(0,0,400,150,fill=gradient(rgb(25,25,112),rgb(135,206,250),start='top')),
+    path,
+    tomb1,
+    tomb2,
+    tomb3,
+    tomb4,
+    tomb5,
+    Label('Ghost Smasher',200,25,size=30,fill='white'),
+    Label('Score: ',50,375,fill='white',size=25),
+    app.Score
+)
+
+# Places all the 5 ghosts in front of their respective tombs:
+ghost1 = Image(app.ghost, 25, 300)
+ghost1.width -= 340
+ghost1.height -= 587
+ghost1.centerX = tomb1.centerX
+ghost1.centerY = tomb1.centerY
+
+ghost2 = Image(app.ghost, 25, 300)
+ghost2.width -= 330
+ghost2.height -= 570
+ghost2.centerX = tomb2.centerX
+ghost2.centerY = tomb2.centerY
+
+ghost3 = Image(app.ghost, 25, 300)
+ghost3.width -= 335
+ghost3.height -= 578
+ghost3.centerX = tomb3.centerX
+ghost3.centerY = tomb3.centerY
+
+ghost4 = Image(app.ghost, 25, 300)
+ghost4.width -= 330
+ghost4.height -= 570
+ghost4.centerX = tomb4.centerX
+ghost4.centerY = tomb4.centerY
+
+ghost5 = Image(app.ghost, 25, 300)
+ghost5.width -= 320
+ghost5.height -= 550
+ghost5.centerX = tomb5.centerX
+ghost5.centerY = tomb5.centerY
+
+# Custom property which determines the speed of the ghost. The value of this property is changed later in the code:
+ghost1.speed = 1
+ghost2.speed = 1
+ghost3.speed = 1
+ghost4.speed = 1
+ghost5.speed = 1
+
+# Group which will contain all the smoke bubbles when the game starts:
+app.smoke = Group()
+
+# Group which contains all 5 ghosts:
+app.ghosts = Group(
+    ghost1,
+    ghost2,
+    ghost3,
+    ghost4,
+    ghost5
+)
+
+# Makes the ghosts and playing map invisible at the start:
+app.ghosts.visible = False
+if app.play == False:
+    background.visible = False
+
+# Group containing the win screen shown if a play wins the game:
+Win = Group(
+    Rect(0,0,400,400,fill=rgb(119,116,117)),
+    Label('You Won!',200,200,size=45,fill='white'),
+)
+
+# Group containing the lose screen shown if a player loses:
+Lost = Group(
+    Rect(0,0,400,400,fill=rgb(119,116,117)),
+    Label('You Ran Out of Time',200,180,size=40,fill='white'),
+    Label('Game Over',200,220,size=35,fill='white'),
+)
+
+# Sets the lose and win screens to invisible at the start of the game:
+Lost.visible = False
+Win.visible = False
+
+# Changes the starting dimension of the play button:
+button.width = 150
+button.height = 75
+button.centerX = 200
+
+# Where I coded what happens when a user moves their mouse:
+def onMouseMove(mouseX,mouseY):
+    # Determines what to do when a user does or doesn't hover over the play button
+    # This code makes the play button larger when a user hovers over it:
+    if button.hits(mouseX,mouseY):
+        button.width = 190
+        button.height = 100
+        button.centerX = 200
+    else:
+        button.width = 150
+        button.height = 75
+        button.centerX = 200
+
+    # Determines what to do when a user does or doesn't hover over one of the level buttons
+    # Goes through all the level buttons and changes their size based on where the user's mouse is:
+    for mode in levels:
+        if mode.hits(mouseX,mouseY):
+            if mode.width != 76:
+                centerx = mode.centerX
+                mode.width = 75
+                mode.height = 50
+        else:
+            if mode.width != 76:
+                centerx = mode.centerX
+                mode.width = 50
+                mode.height = 35
+
+# Places the brown path on the game map:
+path = Image(app.path,35,50)
+path.width -= 200
+path.height -= 600
+path.top += 100
+
+# The following code places 5 tombs in different spots on the game map:
+tomb1 = Image(app.url, 25, 75)
+tomb1.width -= 150
+tomb1.height -= 150
+tomb1.top += 75
+
+tomb2 = Image(app.url, 215, 75)
+tomb2.width -= 110
+tomb2.height -= 110
+tomb2.top += 225
+tomb2.left += 20
+
+tomb3 = Image(app.url, 215, 75)
+tomb3.width -= 135
+tomb3.height -= 135
+tomb3.top += 125
+tomb3.left -= 110
+
+tomb4 = Image(app.url, 215, 75)
+tomb4.width -= 120
+tomb4.height -= 120
+tomb4.top += 200
+tomb4.left -= 225
+
+tomb5 = Image(app.url, 215, 75)
+tomb5.width -= 120
+tomb5.height -= 120
+tomb5.top += 75
+tomb5.left += 45
+
+# Defines the score counter:
+app.Score = Label(0, 100, 375, fill='white', size=25)
+
+# Puts all of the map elements in one group:
+background = Group(
+    Rect(0,150,400,250,fill=gradient(rgb(144,238,144),rgb(144,238,144),'darkGreen',start='top')),
+    Rect(0,0,400,150,fill=gradient(rgb(25,25,112),rgb(135,206,250),start='top')),
+    path,
+    tomb1,
+    tomb2,
+    tomb3,
+    tomb4,
+    tomb5,
+    Label('Ghost Smasher',200,25,size=30,fill='white'),
+    Label('Score: ',50,375,fill='white',size=25),
+    app.Score
+)
+
+# Places all the 5 ghosts in front of their respective tombs:
+ghost1 = Image(app.ghost, 25, 300)
+ghost1.width -= 340
+ghost1.height -= 587
+ghost1.centerX = tomb1.centerX
+ghost1.centerY = tomb1.centerY
+
+ghost2 = Image(app.ghost, 25, 300)
+ghost2.width -= 330
+ghost2.height -= 570
+ghost2.centerX = tomb2.centerX
+ghost2.centerY = tomb2.centerY
+
+ghost3 = Image(app.ghost, 25, 300)
+ghost3.width -= 335
+ghost3.height -= 578
+ghost3.centerX = tomb3.centerX
+ghost3.centerY = tomb3.centerY
+
+ghost4 = Image(app.ghost, 25, 300)
+ghost4.width -= 330
+ghost4.height -= 570
+ghost4.centerX = tomb4.centerX
+ghost4.centerY = tomb4.centerY
+
+ghost5 = Image(app.ghost, 25, 300)
+ghost5.width -= 320
+ghost5.height -= 550
+ghost5.centerX = tomb5.centerX
+ghost5.centerY = tomb5.centerY
+
+# Custom property which determines the speed of the ghost. The value of this property is changed later in the code:
+ghost1.speed = 1
+ghost2.speed = 1
+ghost3.speed = 1
+ghost4.speed = 1
+ghost5.speed = 1
+
+# Group which will contain all the smoke bubbles when the game starts:
+app.smoke = Group()
+
+# Group which contains all 5 ghosts:
+app.ghosts = Group(
+    ghost1,
+    ghost2,
+    ghost3,
+    ghost4,
+    ghost5
+)
+
+# Makes the ghosts and playing map invisible at the start:
+app.ghosts.visible = False
+if app.play == False:
+    background.visible = False
